@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  mongo:
+    image: 'mongo:7.0.5'
+    environment:
+      - MONGO_INITDB_DATABASE=playlist
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin11
