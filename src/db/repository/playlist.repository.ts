@@ -27,25 +27,18 @@ export const deletePlaylist = async (id: string) => {
       if (!playlist) {
         throw new NotFoundError();
       }
-
-
       const songsToDelete = await Song.find({ playlist: id }).session(session);
       const songIds = songsToDelete.map(song => song._id);
-
       await Song.deleteMany({ _id: { $in: songIds } }).session(session);
-
-
       await Playlist.findByIdAndDelete(id).session(session);
 
       await session.commitTransaction();
 
-
   } catch (error) {
-      // Abort transaction on error
+     
       await session.abortTransaction();
       throw error;
   } finally {
-      // End the session
       session.endSession();
   }
 };

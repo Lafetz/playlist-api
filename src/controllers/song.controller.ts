@@ -4,7 +4,8 @@ import { NotFoundError } from '../errors/notFound.error';
 
 import { validateRequest } from '../validator/validateRequest';
 import { validateSongCreate, validateSongUpdate } from '../validator/validateSong';
-import { param } from 'express-validator';
+
+import { validateParam,validateQueryParams } from '../validator/validateParam';
 export const createSongHandler = [...validateSongCreate,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, url, playlistId } = req.body;
@@ -18,7 +19,7 @@ export const createSongHandler = [...validateSongCreate,validateRequest,async (r
   }
 }]
 
-export const getSongHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const getSongHandler =[...validateParam,validateRequest, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const song = await getSong(id);
@@ -29,9 +30,9 @@ export const getSongHandler = async (req: Request, res: Response, next: NextFunc
   } catch (err) {
     next(err);
   }
-};
+}]
 
-export const getSongsHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const getSongsHandler =[ ...validateQueryParams,async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { page, limit, sort } = req.query;
     const pageNumber = parseInt(page as string, 10) || 1;
@@ -42,9 +43,9 @@ export const getSongsHandler = async (req: Request, res: Response, next: NextFun
   } catch (err) {
     next(err);
   }
-};
+}]
 
-export const updateSongHandler = [...validateSongUpdate,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
+export const updateSongHandler = [ ...validateParam,...validateSongUpdate,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const { name, url } = req.body;
@@ -58,7 +59,7 @@ export const updateSongHandler = [...validateSongUpdate,validateRequest,async (r
   }
 }]
 
-export const deleteSongHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteSongHandler =[ ...validateParam,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const deletedSong = await deleteSong(id);
@@ -69,4 +70,4 @@ export const deleteSongHandler = async (req: Request, res: Response, next: NextF
   } catch (err) {
     next(err);
   }
-};
+}]

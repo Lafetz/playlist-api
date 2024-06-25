@@ -1,8 +1,8 @@
 
 import { body } from "express-validator";
 
-const validatePlaylist = [
-  body("name")
+export const validatePlaylistCreate = [
+  body("title")
     .not()
     .isEmpty()
     .withMessage("Playlist name is required"),
@@ -12,4 +12,14 @@ const validatePlaylist = [
     .withMessage("Description must be a string"),
 ];
 
-export default validatePlaylist;
+export const validatePlaylistUpdate = [
+  body("title")
+    .optional()
+    .not()
+    .isEmpty()
+    .withMessage("Playlist name cannot be empty"),
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("Description must be a string"),
+];

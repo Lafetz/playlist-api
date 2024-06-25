@@ -29,28 +29,28 @@ describe("User API", () => {
       expect(response.body).toHaveProperty("msg", "account Created");
     });
 
-    it("should return a 403 if email is taken", async () => {
+    it("should return a 422 if email is taken", async () => {
       const userData = {
         email: "test2@example.com",
         password: "password123",
       };
       await supertest(app).post("/api/signup").send(userData)
-      await supertest(app).post("/api/signup").send(userData).expect(403);
+      await supertest(app).post("/api/signup").send(userData).expect(422);
     });
-    it("should return a 403 if email is missing", async () => {
+    it("should return a 422 if email is missing", async () => {
         const userData = {
           password: "password123",
         };
   
-        await supertest(app).post("/api/signup").send(userData).expect(403);
+        await supertest(app).post("/api/signup").send(userData).expect(422);
       });
   
-      it("should return a 403 if password is missing", async () => {
+      it("should return a 422 if password is missing", async () => {
         const userData = {
           email: "test@example.com",
         };
   
-        await supertest(app).post("/api/signup").send(userData).expect(403);
+        await supertest(app).post("/api/signup").send(userData).expect(422);
       });
   });
 
@@ -68,7 +68,27 @@ describe("User API", () => {
 
       expect(response.body).toHaveProperty("token");
     });
+    it("should return a 422 if password is missing", async () => {
+      const userData = {
+        email: "test@example.com",
+      };
+      await supertest(app).post("/api/signin").send(userData).expect(422);
+    });
+    it("should return a 422 if email is missing", async () => {
+      const userData = {
+        password: "password123",
+      };
 
+      await supertest(app).post("/api/signin").send(userData).expect(422);
+    });
+
+    it("should return a 422 if password is missing", async () => {
+      const userData = {
+        email: "test@example.com",
+      };
+
+      await supertest(app).post("/api/signup").send(userData).expect(422);
+    });
     it("should return a 401 if the credentials are incorrect", async () => {
       const userData = {
         email: "nonexistent@example.com",

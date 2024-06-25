@@ -39,6 +39,32 @@ describe('Song API', () => {
             expect(response.body.name).toBe(testSong.name);
             expect(response.body.url).toBe(testSong.url);
         });
+        it('should return 422 if name is missing', async () => {
+            const { name, ...songWithoutName } = testSong;
+            await supertest(app)
+                .post('/api/songs')
+                .set("authorization", `Bearer ${jwt}`)
+                .send(songWithoutName)
+                .expect(422);
+        });
+
+        it('should return 422 if url is missing', async () => {
+            const { url, ...songWithoutUrl } = testSong;
+            await supertest(app)
+                .post('/api/songs')
+                .set("authorization", `Bearer ${jwt}`)
+                .send(songWithoutUrl)
+                .expect(422);
+        });
+
+        it('should return 422 if playlistId is missing', async () => {
+            const { playlistId, ...songWithoutPlaylistId } = testSong;
+            await supertest(app)
+                .post('/api/songs')
+                .set("authorization", `Bearer ${jwt}`)
+                .send(songWithoutPlaylistId)
+                .expect(422);
+        });
 
     });
 
@@ -52,7 +78,10 @@ describe('Song API', () => {
             
             expect(Array.isArray(response.body)).toBe(true);
         });
-
+        it('GET /api/songs should return 403 if user is not logged in', async () => {
+            await supertest(app)
+            .get('/api/songs').expect(403);
+          });
     });
 
     describe('GET /api/songs/:id', () => {

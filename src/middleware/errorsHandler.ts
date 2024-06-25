@@ -17,7 +17,7 @@ export const errorHandler = (
         errors.push({ message: `${k} taken`, field: k });
       }
     }
-    return res.status(403).send({ errors: errors });
+    return res.status(422).send({ errors: errors });
   }
   if (err instanceof CustomError) {
     return res.status(err.statusCode).send({ errors: err.serializeErrors() });

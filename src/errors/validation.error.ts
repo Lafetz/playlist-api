@@ -2,7 +2,7 @@ import { FieldValidationError } from "express-validator";
 import { CustomError } from "./custom.error";
 
 export class RequestValidationError extends CustomError {
-  statusCode = 403;
+  statusCode = 422;
   errors;
   constructor(errors: FieldValidationError[]) {
     super("Invalid request parameters");

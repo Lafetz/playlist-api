@@ -35,7 +35,21 @@ describe('Playlist API', () => {
             expect(response.body.title).toBe(testPlaylist.title);
             expect(response.body.description).toBe(testPlaylist.description);
         });
-
+        it('should return 422 if title is missing', async () => {
+            const { title, ...playlistWithoutName } = testPlaylist;
+            await supertest(app)
+                .post('/api/playlists')
+                .set("authorization", `Bearer ${jwt}`)
+                .send(playlistWithoutName)
+                .expect(422);
+        });
+        it('should return 403 if not logged in', async () => {
+            await supertest(app)
+                .post('/api/playlists')
+                .send(testPlaylist)
+                .expect(403);
+        });
+       
     });
 
     describe('GET /api/playlists', () => {
@@ -105,7 +119,7 @@ describe('Playlist API', () => {
             expect(updateResponse.body.title).toBe(updatedData.title);
             expect(updateResponse.body.description).toBe(updatedData.description);
         });
-
+  
         it('should return a 404 if the playlist does not exist', async () => {
             const updatedData = {
                 name: "Updated Test Playlist",
