@@ -4,7 +4,8 @@ import { NotFoundError } from "../errors/notFound.error";
 export const createPlaylistHandler=async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { title, description } = req.body;
-      const playlist=await createPlaylist(title,description)
+      const userId="66759fff3985509d89803493"
+      const playlist=await createPlaylist(title,description,userId)
       res.status(201).json(playlist);
     } catch (err) {
       next(err);
@@ -18,7 +19,7 @@ export const createPlaylistHandler=async (req: Request, res: Response, next: Nex
        throw new NotFoundError
       }
   
-      res.json(playlist);
+      res.status(200).json(playlist);
     } catch (err) {
       next(err);
     }
@@ -28,9 +29,9 @@ export const createPlaylistHandler=async (req: Request, res: Response, next: Nex
       const { page, limit, sort } = req.query;
       const pageNumber = parseInt(page as string, 10) || 1;
       const limitNumber = parseInt(limit as string, 10) || 10;
-      const sortOption = sort as string || 'title';
+      const sortOption = sort as string ;
       const playlists = await getPlaylists(pageNumber, limitNumber, sortOption);
-      res.json(playlists);
+      res.status(200).json(playlists);
     } catch (err) {
       next(err);
     }
@@ -45,7 +46,7 @@ export const createPlaylistHandler=async (req: Request, res: Response, next: Nex
         throw new NotFoundError
       }
   
-      res.json(updatedPlaylist);
+      res.status(200).json(updatedPlaylist);
     } catch (err) {
       next(err);
     }
@@ -59,7 +60,7 @@ export const createPlaylistHandler=async (req: Request, res: Response, next: Nex
         throw new NotFoundError
       }
   
-      res.json(deletedPlaylist);
+      res.status(200).json(deletedPlaylist);
     } catch (err) {
       next(err);
     }

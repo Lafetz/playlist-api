@@ -4,7 +4,8 @@ import { verifyJWT } from "../util/jwt";
 
 
 function deserializeUser(req: Request, res: Response, next: NextFunction) {
- const authHeader = req.headers['Authorization']
+ const authHeader = req.headers['authorization']
+
  if (!authHeader||typeof authHeader !== 'string'){
     return next();
  }

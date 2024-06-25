@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { validateRequest } from "../middleware/validateRequest";
+import { validateRequest } from "../validator/validateRequest";
 import bcrypt from "bcryptjs";
 import { createUser } from "../db/repository/user.repository";
-import validateAcccount from "../middleware/validateAccoutn";
+import validateAcccount from "../validator/validateAccount";
 const signup= [
 ...validateAcccount,
   validateRequest,

@@ -1,13 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
-
-export interface IPlaylist extends Document {
+interface IPlaylist extends Document {
   title: string,
   description?: string,
+  userId: mongoose.Types.ObjectId,
   songs: mongoose.Types.ObjectId[],
   createdAt:Date,
   updatedAt:Date,
 }
-
 const playlistSchema = new Schema<IPlaylist>({
   title: {
     type: String,
@@ -15,6 +14,7 @@ const playlistSchema = new Schema<IPlaylist>({
     maxLength: 200,
     required: true,
   },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   description: {
     type: String,
     maxLength: 500,

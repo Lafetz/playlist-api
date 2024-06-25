@@ -9,11 +9,12 @@ const songSchema = new Schema({
     maxLength: 200,
     required: true,
   },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   url: {
     type: String,
     required: true,
   },
-  playlist: {
+  playlistId: {
     type: Schema.Types.ObjectId,
     ref: "Playlist",
     required: true,

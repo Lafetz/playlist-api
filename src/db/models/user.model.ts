@@ -3,9 +3,14 @@ export interface UserInput {
   email:string,
   password:string,
 }
-
+interface IUser extends Document {
+  email:string,
+  password:string,
+  createdAt:Date,
+  updatedAt:Date,
+}
 const Schema = mongoose.Schema;
-const userSchema = new Schema({
+const userSchema = new Schema<IUser>({
   email: {
     type: String,
     minLength: 3,
@@ -18,4 +23,4 @@ const userSchema = new Schema({
   timestamps: true,
 });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model<IUser>("User", userSchema);

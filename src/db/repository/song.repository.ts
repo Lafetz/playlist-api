@@ -4,12 +4,13 @@ import mongoose from "mongoose";
 import { NotFoundError } from "../../errors/notFound.error";
 
 
-export const createSong = async (name: string, url: string, playlistId: string) => {
+export const createSong = async (name: string, url: string, playlistId: string,userId:string) => {
     let createdSong;
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-      createdSong = await Song.create([{ name, url, playlist: playlistId }], { session });
+    
+      createdSong = await Song.create([{ name, url, playlistId,userId }], { session });
       createdSong = createdSong[0]; 
   
       const playlist = await Playlist.findByIdAndUpdate(
@@ -19,7 +20,7 @@ export const createSong = async (name: string, url: string, playlistId: string) 
       );
   
       if (!playlist) {
-        throw new Error("Playlist not found");
+        throw new NotFoundError()
       }
   
       await session.commitTransaction();
@@ -33,11 +34,12 @@ export const createSong = async (name: string, url: string, playlistId: string) 
   };
 
 export const getSong = async (id: string) => {
-  return await Song.findById(id).populate('playlist');
+  return await Song.findById(id);
 };
 
 export const updateSong = async (id: string, updateData: Partial<{ name: string; url: string; }>) => {
-  return await Song.findByIdAndUpdate(id, updateData, { new: true }).populate('playlist');
+
+  return await Song.findByIdAndUpdate(id, updateData, { new: true });
 };
 
 export const deleteSong = async (id: string) => {
@@ -47,18 +49,19 @@ export const deleteSong = async (id: string) => {
     try {
       deletedSong = await Song.findByIdAndDelete(id).session(session);
       if (!deletedSong) {
-        return new NotFoundError
+        throw new NotFoundError();
       }
+      //
       const playlist = await Playlist.findByIdAndUpdate(
-        deletedSong.playlist,
+        deletedSong.playlistId,
         { $pull: { songs: deletedSong._id } },
         { new: true, session }
       );
       if (!playlist) {
         console.error("playlist not found")
-        return new NotFoundError
+        throw new NotFoundError();
       }
-  
+  //
       await session.commitTransaction();
       return deletedSong;
     } catch (error) {
@@ -71,5 +74,5 @@ export const deleteSong = async (id: string) => {
 
 export const getSongs = async (page: number = 1, limit: number = 10, sort: string = 'name') => {
   const skip = (page - 1) * limit;
-  return await Song.find().sort(sort).skip(skip).limit(limit).populate('playlist');
+  return await Song.find().sort(sort).skip(skip).limit(limit);
 };

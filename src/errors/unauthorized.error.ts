@@ -1,6 +1,6 @@
 import { CustomError } from "./custom.error";
 export class UnauthorizedAccess extends CustomError {
-  statusCode = 401;
+  statusCode = 403;
   constructor() {
     super("unauthorized");
     Object.setPrototypeOf(this, UnauthorizedAccess.prototype);

@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
-import validateAcccount from "../middleware/validateAccoutn";
+import validateAcccount from "../validator/validateAccount";
 import { getUser } from "../db/repository/user.repository";
-import { validateRequest } from "../middleware/validateRequest";
+import { validateRequest } from "../validator/validateRequest";
 import { signJWT } from "../util/jwt";
 import { IncorrectCredentials } from "../errors/IncorrectCredentials";
 type userInfo={
-  email:string
+  id:string
 }
 const signin = [
  ...validateAcccount,
@@ -23,7 +23,7 @@ const signin = [
         if (!statusLogin) {
           throw new IncorrectCredentials();
         }
-      const userInfo:userInfo={email:req.body.email}
+      const userInfo={id:user._id}
       const jwt=signJWT(userInfo,"1d")
       res.status(200).json({token:jwt})
       } else {
