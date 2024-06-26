@@ -3,7 +3,7 @@ import { createPlaylist, deletePlaylist, getPlaylist, getPlaylists, updatePlayli
 import { NotFoundError } from "../errors/notFound.error";
 import { validatePlaylistCreate, validatePlaylistUpdate } from "../validator/validatePlaylist";
 import { validateRequest } from "../validator/validateRequest";
-import { validateParam, validateQueryParams } from "../validator/validateParam";
+import { validateParam, validateQueryPlay } from "../validator/validateParam";
 export const createPlaylistHandler=[...validatePlaylistCreate,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { title, description } = req.body;
@@ -28,7 +28,7 @@ export const createPlaylistHandler=[...validatePlaylistCreate,validateRequest,as
       next(err);
     }
   }]
-  export const getPlaylistsHandler = [...validateQueryParams,async (req: Request, res: Response, next: NextFunction) => {
+  export const getPlaylistsHandler = [...validateQueryPlay,async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { page, limit, sort } = req.query;
       const pageNumber = parseInt(page as string, 10) || 1;

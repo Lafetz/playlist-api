@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import mongoose, { mongo } from "mongoose";
+import { mongo } from "mongoose";
 import { CustomError } from "../errors/custom.error";
 
 export const errorHandler = (
@@ -8,6 +8,11 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  if (err instanceof SyntaxError && 'body' in err) {
+    return res.status(400).send({
+      errors: [{ message: err.message }]
+    });
+  }
   if (err instanceof mongo.MongoError && err.code === 11000) {
     let errors = [];
     //@ts-ignore
@@ -23,6 +28,7 @@ export const errorHandler = (
     return res.status(err.statusCode).send({ errors: err.serializeErrors() });
   }
   console.error(err);
+
   res.status(500).send({
     errors: [{ message: "Something went wrong" }],
   });

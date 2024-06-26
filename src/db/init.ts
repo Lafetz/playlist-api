@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
-import config from "../config/env.config"
+import  config from "../config/env.config"
 
 
 async function InitDB() {
-  const dbUrl = config.dbUrl;
-  if(!dbUrl){
-    console.log("db url missing");
-    process.exit(1);
-  }
+  const dbUrl = config.MONGODB_URI;
   try {
     await mongoose.connect(dbUrl);
     console.log("db connected...");

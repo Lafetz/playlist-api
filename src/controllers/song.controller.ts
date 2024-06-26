@@ -5,7 +5,7 @@ import { NotFoundError } from '../errors/notFound.error';
 import { validateRequest } from '../validator/validateRequest';
 import { validateSongCreate, validateSongUpdate } from '../validator/validateSong';
 
-import { validateParam,validateQueryParams } from '../validator/validateParam';
+import { validateParam, validateQuerySong } from '../validator/validateParam';
 export const createSongHandler = [...validateSongCreate,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, url, playlistId } = req.body;
@@ -32,7 +32,7 @@ export const getSongHandler =[...validateParam,validateRequest, async (req: Requ
   }
 }]
 
-export const getSongsHandler =[ ...validateQueryParams,async (req: Request, res: Response, next: NextFunction) => {
+export const getSongsHandler =[ ...validateQuerySong,async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { page, limit, sort } = req.query;
     const pageNumber = parseInt(page as string, 10) || 1;
