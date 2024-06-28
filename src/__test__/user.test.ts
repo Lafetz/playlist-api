@@ -1,8 +1,8 @@
 import supertest from "supertest";
-import createServer from "../server";
-import InitDB from "../db/init";
+import InitDB from "../repository/init";
 import mongoose from "mongoose";
-import User from "../db/models/user.model";
+import User from "../repository/models/user.model";
+import createServer from "../web/server";
 const app = createServer();
 describe("User API", () => {
   beforeAll(async () => {

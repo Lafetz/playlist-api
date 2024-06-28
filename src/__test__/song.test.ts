@@ -1,9 +1,9 @@
 import supertest from "supertest";
-import createServer from "../server";
-import InitDB from "../db/init";
+import createServer from "../web/server";
+import InitDB from "../repository/init";
 import mongoose from "mongoose";
-import { signJWT } from "../util/jwt";
-import { createPlaylist } from "../db/repository/playlist.repository";
+import { signJWT } from "../web/utils/jwt";
+import { createPlaylist } from "../core/services/playlist.service";
 
 const app = createServer();
 const id = new mongoose.Types.ObjectId().toString();
@@ -19,8 +19,8 @@ describe('Song API', () => {
     };
     beforeAll(async () => {
     await InitDB();
-    const play= await createPlaylist("ts","ts",id)
-    testSong.playlistId=play._id as string
+    const play= await createPlaylist(id.toString(),{title:"ss",description:"ss"})
+    testSong.playlistId=play._id.toString()
     });
 
     afterAll(async () => {
@@ -32,7 +32,7 @@ describe('Song API', () => {
         it('should create a new song', async () => {
             const response = await supertest(app)
                 .post('/api/songs')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(testSong)
                 .expect(201);
             
@@ -43,7 +43,7 @@ describe('Song API', () => {
             const { name, ...songWithoutName } = testSong;
             await supertest(app)
                 .post('/api/songs')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(songWithoutName)
                 .expect(422);
         });
@@ -52,7 +52,7 @@ describe('Song API', () => {
             const { url, ...songWithoutUrl } = testSong;
             await supertest(app)
                 .post('/api/songs')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(songWithoutUrl)
                 .expect(422);
         });
@@ -61,7 +61,7 @@ describe('Song API', () => {
             const { playlistId, ...songWithoutPlaylistId } = testSong;
             await supertest(app)
                 .post('/api/songs')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(songWithoutPlaylistId)
                 .expect(422);
         });
@@ -72,8 +72,8 @@ describe('Song API', () => {
 
         it('should return a list of songs', async () => {
             const response = await supertest(app)
-                .get('/api/songs')
-                .set("authorization", `Bearer ${jwt}`)
+                .get(`/api/songs?playlistId=${id}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(200);
             
             expect(Array.isArray(response.body)).toBe(true);
@@ -89,14 +89,14 @@ describe('Song API', () => {
         it('should return a 404 if the song does not exist', async () => {
             await supertest(app)
                 .get('/api/songs/4edd40c86762e0fb12000003')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(404);
         });
 
         it('should return the song if it exists', async () => {
             const createResponse = await supertest(app)
                 .post('/api/songs')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(testSong)
                 .expect(201);
             
@@ -104,7 +104,7 @@ describe('Song API', () => {
 
             const getResponse = await supertest(app)
                 .get(`/api/songs/${songId}`)
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(200);
 
             expect(getResponse.body.name).toBe(testSong.name);
@@ -118,7 +118,7 @@ describe('Song API', () => {
         it('should update the song if it exists', async () => {
             const createResponse = await supertest(app)
                 .post('/api/songs')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(testSong)
                 .expect(201);
             
@@ -131,7 +131,7 @@ describe('Song API', () => {
 
             const updateResponse = await supertest(app)
                 .put(`/api/songs/${songId}`)
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(updatedData)
                 .expect(200);
 
@@ -147,7 +147,7 @@ describe('Song API', () => {
 
             await supertest(app)
                 .put('/api/songs/4edd40c86762e0fb12000003')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(updatedData)
                 .expect(404);
         });
@@ -160,7 +160,7 @@ describe('Song API', () => {
         it('should delete the song if it exists', async () => {
             const createResponse = await supertest(app)
                 .post('/api/songs')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(testSong)
                 .expect(201);
             
@@ -168,12 +168,12 @@ describe('Song API', () => {
 
             await supertest(app)
                 .delete(`/api/songs/${songId}`)
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(200);
 
             await supertest(app)
                 .get(`/api/songs/${songId}`)
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(404);
         });
 

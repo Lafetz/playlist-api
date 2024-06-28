@@ -1,8 +1,5 @@
 import mongoose, { Document } from "mongoose";
-export interface UserInput {
-  email:string,
-  password:string,
-}
+
 interface IUser extends Document {
   email:string,
   password:string,

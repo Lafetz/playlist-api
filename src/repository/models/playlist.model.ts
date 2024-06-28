@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
-interface IPlaylist extends Document {
+interface IPlaylist  {
   title: string,
-  description?: string,
+  description: string,
   userId: mongoose.Types.ObjectId,
   songs: mongoose.Types.ObjectId[],
   createdAt:Date,

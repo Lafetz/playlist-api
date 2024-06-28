@@ -1,8 +1,8 @@
 import supertest from "supertest";
-import createServer from "../server";
-import InitDB from "../db/init";
+import createServer from "../web/server";
+import InitDB from "../repository/init";
 import mongoose from "mongoose";
-import { signJWT } from "../util/jwt";
+import { signJWT } from "../web/utils/jwt";
 const app = createServer();
 describe('Playlist API', () => {
 
@@ -28,7 +28,7 @@ describe('Playlist API', () => {
         it('should create a new playlist', async () => {
             const response = await supertest(app)
                 .post('/api/playlists')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(testPlaylist)
                 .expect(201);
             
@@ -39,7 +39,7 @@ describe('Playlist API', () => {
             const { title, ...playlistWithoutName } = testPlaylist;
             await supertest(app)
                 .post('/api/playlists')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(playlistWithoutName)
                 .expect(422);
         });
@@ -57,7 +57,7 @@ describe('Playlist API', () => {
         it('should return a list of playlists', async () => {
             const response = await supertest(app)
                 .get('/api/playlists')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(200);
             
             expect(Array.isArray(response.body)).toBe(true);
@@ -70,14 +70,14 @@ describe('Playlist API', () => {
         it('should return a 404 if the playlist does not exist', async () => {
             await supertest(app)
                 .get('/api/playlists/4edd40c86762e0fb12000003')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(404);
         });
 
         it('should return the playlist if it exists', async () => {
             const createResponse = await supertest(app)
                 .post('/api/playlists')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(testPlaylist)
                 .expect(201);
             
@@ -85,7 +85,7 @@ describe('Playlist API', () => {
 
             const getResponse = await supertest(app)
                 .get(`/api/playlists/${playlistId}`)
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(200);
 
             expect(getResponse.body.title).toBe(testPlaylist.title);
@@ -99,7 +99,7 @@ describe('Playlist API', () => {
         it('should update the playlist if it exists', async () => {
             const createResponse = await supertest(app)
                 .post('/api/playlists')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(testPlaylist)
                 .expect(201);
             
@@ -112,7 +112,7 @@ describe('Playlist API', () => {
 
             const updateResponse = await supertest(app)
                 .put(`/api/playlists/${playlistId}`)
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(updatedData)
                 .expect(200);
 
@@ -128,7 +128,7 @@ describe('Playlist API', () => {
 
             await supertest(app)
                 .put('/api/playlists/4edd40c86762e0fb12000003')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(updatedData)
                 .expect(404);
         });
@@ -140,7 +140,7 @@ describe('Playlist API', () => {
         it('should delete the playlist if it exists', async () => {
             const createResponse = await supertest(app)
                 .post('/api/playlists')
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .send(testPlaylist)
                 .expect(201);
             
@@ -148,12 +148,12 @@ describe('Playlist API', () => {
 
             await supertest(app)
                 .delete(`/api/playlists/${playlistId}`)
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(200);
 
             await supertest(app)
                 .get(`/api/playlists/${playlistId}`)
-                .set("authorization", `Bearer ${jwt}`)
+                .set("Authorization", `Bearer ${jwt}`)
                 .expect(404);
         });
 

@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { UnauthorizedAccess } from "../errors/unauthorized.error";
-import { verifyJWT } from "../util/jwt";
 
+import { verifyJWT } from "../utils/jwt";
 
 function deserializeUser(req: Request, res: Response, next: NextFunction) {
  const authHeader = req.headers['authorization']
-
  if (!authHeader||typeof authHeader !== 'string'){
     return next();
  }

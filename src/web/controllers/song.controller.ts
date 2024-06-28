@@ -1,18 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import { createSong, deleteSong, getSong, getSongs, updateSong } from '../db/repository/song.repository';
+import * as SongService from "../../core/services/song.service"
 import { NotFoundError } from '../errors/notFound.error';
-
 import { validateRequest } from '../validator/validateRequest';
 import { validateSongCreate, validateSongUpdate } from '../validator/validateSong';
-
 import { validateParam, validateQuerySong } from '../validator/validateParam';
+import { UnauthorizedAccess } from '../errors/unauthorized.error';
 export const createSongHandler = [...validateSongCreate,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, url, playlistId } = req.body;
     //@ts-ignore
     const userId=req.user.id
-  
-    const song = await createSong(name, url, playlistId,userId);
+    const song = await SongService.createSong({name, url, playlistId,userId})
     res.status(201).json(song);
   } catch (err) {
     next(err);
@@ -22,7 +20,7 @@ export const createSongHandler = [...validateSongCreate,validateRequest,async (r
 export const getSongHandler =[...validateParam,validateRequest, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const song = await getSong(id);
+    const song = await SongService.getSong(id);
     if (!song) {
       throw new NotFoundError();
     }
@@ -32,13 +30,14 @@ export const getSongHandler =[...validateParam,validateRequest, async (req: Requ
   }
 }]
 
-export const getSongsHandler =[ ...validateQuerySong,async (req: Request, res: Response, next: NextFunction) => {
+export const getSongsHandler =[ ...validateQuerySong,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { page, limit, sort } = req.query;
+    const { page, limit, sort,playlistId} = req.query;
     const pageNumber = parseInt(page as string, 10) || 1;
     const limitNumber = parseInt(limit as string, 10) || 10;
     const sortOption = sort as string; 
-    const songs = await getSongs(pageNumber, limitNumber, sortOption);
+    //@ts-ignore
+    const songs = await SongService.getSongs(playlistId as string,{offset:pageNumber, limit:limitNumber, sort:sortOption});
     res.status(200).json(songs);
   } catch (err) {
     next(err);
@@ -47,9 +46,18 @@ export const getSongsHandler =[ ...validateQuerySong,async (req: Request, res: R
 
 export const updateSongHandler = [ ...validateParam,...validateSongUpdate,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
   try {
+      //@ts-ignore
+    const userId=req.user.id
     const { id } = req.params;
+    const song = await SongService.getSong(id);
+    if (!song) {
+      throw new NotFoundError();
+    }
+   if(song.userId.toString()!==userId){
+    throw new UnauthorizedAccess()
+   }
     const { name, url } = req.body;
-    const updatedSong = await updateSong(id, { name, url });
+    const updatedSong = await SongService.updateSong(id, { name, url });
     if (!updatedSong) {
       throw new NotFoundError();
     }
@@ -61,8 +69,17 @@ export const updateSongHandler = [ ...validateParam,...validateSongUpdate,valida
 
 export const deleteSongHandler =[ ...validateParam,validateRequest,async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
-    const deletedSong = await deleteSong(id);
+      //@ts-ignore
+      const userId=req.user.id
+      const { id } = req.params;
+      const song = await SongService.getSong(id);
+      if (!song) {
+        throw new NotFoundError();
+      }
+     if(song.userId.toString()!==userId){
+      throw new UnauthorizedAccess()
+     }
+    const deletedSong = await SongService.deleteSong(id);
     if (!deletedSong) {
       throw new NotFoundError();
     }

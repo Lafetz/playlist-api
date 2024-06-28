@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { validateRequest } from "../validator/validateRequest";
 import bcrypt from "bcryptjs";
-import { createUser } from "../db/repository/user.repository";
 import validateAcccount from "../validator/validateAccount";
+import { createUser } from "../../core/services/user.service";
 const signup= [
 ...validateAcccount,
   validateRequest,
@@ -10,7 +10,7 @@ const signup= [
     try {
     const salt=await bcrypt.genSalt(10)
     const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-    await createUser({email:req.body.email,password:hashedPassword})
+    const user =await createUser({email:req.body.email,password:hashedPassword})
     res.status(201).json({ msg: "account Created" });
     } catch (err) {
       next(err);

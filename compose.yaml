@@ -1,8 +1,11 @@
 version: '3.8'
 services:
-  mongo:
+  mongodb:
     image: 'mongo:7.0.5'
+    ports:
+      - "27017:27017"
     environment:
       - MONGO_INITDB_DATABASE=playlist
       - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin11
+      - MONGO_INITDB_ROOT_PASSWORD=password
+

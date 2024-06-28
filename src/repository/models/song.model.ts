@@ -1,8 +1,14 @@
-import mongoose from "mongoose";
-
+import mongoose , { Document }from "mongoose";
 const { Schema } = mongoose;
-
-const songSchema = new Schema({
+interface ISong extends Document {
+name:string,
+userId:mongoose.Types.ObjectId,
+url:string,
+playlistId:mongoose.Types.ObjectId,
+  createdAt:Date,
+  updatedAt:Date,
+}
+const songSchema = new Schema<ISong>({
   name: {
     type: String,
     minLength: 1,
@@ -21,4 +27,4 @@ const songSchema = new Schema({
   },
 });
 
-export default mongoose.model("Song", songSchema);
+export default mongoose.model<ISong>("Song", songSchema);

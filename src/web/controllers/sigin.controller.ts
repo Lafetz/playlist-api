@@ -1,13 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import validateAcccount from "../validator/validateAccount";
-import { getUser } from "../db/repository/user.repository";
+
 import { validateRequest } from "../validator/validateRequest";
-import { signJWT } from "../util/jwt";
+import { signJWT } from "../utils/jwt";
 import { IncorrectCredentials } from "../errors/IncorrectCredentials";
-type userInfo={
-  id:string
-}
+import { getUser } from "../../core/services/user.service";
 const signin = [
  ...validateAcccount,
   validateRequest,

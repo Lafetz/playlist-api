@@ -6,4 +6,5 @@ module.exports = {
   verbose: true,
   forceExit: true,
   coverageDirectory: 'coverage',
+
 };

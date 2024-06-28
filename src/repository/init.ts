@@ -8,7 +8,7 @@ async function InitDB() {
     await mongoose.connect(dbUrl);
     console.log("db connected...");
   } catch (error) {
-    console.error("error trying to InitDB to db");
+    console.error("error trying to connect to db");
     process.exit(1);
   }
 }

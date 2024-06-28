@@ -1,28 +1,25 @@
 import Song from "../models/song.model";
 import Playlist from "../models/playlist.model";
 import mongoose from "mongoose";
-import { NotFoundError } from "../../errors/notFound.error";
+import { CreateSong, SongQuery } from "../../core/use-cases/song";
 
-
-export const createSong = async (name: string, url: string, playlistId: string,userId:string) => {
+export const createSong = async (song:CreateSong) => {
     let createdSong;
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
     
-      createdSong = await Song.create([{ name, url, playlistId,userId }], { session });
+      createdSong = await Song.create([{ ...song}], { session });
       createdSong = createdSong[0]; 
   
       const playlist = await Playlist.findByIdAndUpdate(
-        playlistId,
+        song.playlistId,
         { $push: { songs: createdSong._id } },
         { new: true, session }
       );
-  
       if (!playlist) {
-        throw new NotFoundError()
+        throw new Error("playlist not found")
       }
-  
       await session.commitTransaction();
       return createdSong;
     } catch (error) {
@@ -49,7 +46,7 @@ export const deleteSong = async (id: string) => {
     try {
       deletedSong = await Song.findByIdAndDelete(id).session(session);
       if (!deletedSong) {
-        throw new NotFoundError();
+        return null
       }
       //
       const playlist = await Playlist.findByIdAndUpdate(
@@ -59,7 +56,7 @@ export const deleteSong = async (id: string) => {
       );
       if (!playlist) {
         console.error("playlist not found")
-        throw new NotFoundError();
+       return null
       }
   //
       await session.commitTransaction();
@@ -72,7 +69,11 @@ export const deleteSong = async (id: string) => {
     }
   };
 
-export const getSongs = async (page: number = 1, limit: number = 10, sort: string = 'name') => {
-  const skip = (page - 1) * limit;
-  return await Song.find().sort(sort).skip(skip).limit(limit);
-};
+  export const getSongs = async (playlistId: string, query:SongQuery) => {
+    const {offset= 1, limit = 10, sort = 'name'}=query
+    const skip = (offset - 1) * limit;
+    return await Song.find({ playlistId: playlistId })
+      .sort(sort)
+      .skip(skip)
+      .limit(limit);
+  };
