@@ -144,7 +144,7 @@ router.put("/:id", requireUser, Playlist.updatePlaylistHandler);
  *       403:
  *         description: Forbidden
  *       404:
- *         description: song not found 
+ *         description: song not found
  */
 router.delete("/:id", requireUser, Playlist.deletePlaylistHandler);
-export default router ;
+export default router;

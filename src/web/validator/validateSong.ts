@@ -1,10 +1,7 @@
 import { body } from "express-validator";
 
-export const validateSongCreate= [
-  body("name")
-    .not()
-    .isEmpty()
-    .withMessage("Song name is required"),
+export const validateSongCreate = [
+  body("name").not().isEmpty().withMessage("Song name is required"),
   body("url")
     .not()
     .isEmpty()
@@ -33,5 +30,5 @@ export const validateSongUpdate = [
     .withMessage("Song URL cannot be empty")
     .bail()
     .isURL()
-    .withMessage("Invalid URL"),
+    .withMessage("Invalid URL")
 ];

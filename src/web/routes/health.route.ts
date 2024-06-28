@@ -1,4 +1,4 @@
-import express,{Request,Response} from "express";
+import express, { Request, Response } from "express";
 const router = express.Router();
 /**
  * @openapi
@@ -12,5 +12,7 @@ const router = express.Router();
  *       200:
  *         description: The application is running smoothly
  */
-router.get("/healthcheck", (req: Request, res: Response) => res.sendStatus(200));
-export default router ;
+router.get("/healthcheck", (req: Request, res: Response) =>
+  res.sendStatus(200)
+);
+export default router;

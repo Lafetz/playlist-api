@@ -134,7 +134,7 @@ router.get("/:id", requireUser, Song.getSongHandler);
  *       403:
  *         description: Forbidden
  *       404:
- *         description: song not found 
+ *         description: song not found
  */
 router.put("/:id", requireUser, Song.updateSongHandler);
 
@@ -161,4 +161,4 @@ router.put("/:id", requireUser, Song.updateSongHandler);
  *         description: song not found
  */
 router.delete("/:id", requireUser, Song.deleteSongHandler);
-export default router ;
+export default router;

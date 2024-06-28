@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import  config from "../config/env.config"
-
+import config from "../config/env.config";
 
 async function InitDB() {
   const dbUrl = config.MONGODB_URI;

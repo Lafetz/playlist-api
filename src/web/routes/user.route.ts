@@ -1,7 +1,6 @@
 import express from "express";
-import  signin  from "../controllers/sigin.controller";
-import  signup from "../controllers/signup.controller";
-
+import signin from "../controllers/sigin.controller";
+import signup from "../controllers/signup.controller";
 
 const router = express.Router();
 
@@ -58,4 +57,4 @@ router.post("/signup", signup);
  *         description: User signed in successfully
  */
 router.post("/signin", signin);
-export default router ;
+export default router;

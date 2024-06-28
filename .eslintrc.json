@@ -1,0 +1,48 @@
+{
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "project": "./tsconfig.json" 
+  },
+  "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never"
+      }
+    ],
+    "no-console": "off",
+    "no-underscore-dangle": ["error", { "allowAfterThis": true, "allow": ["_id"] }],
+    "no-buffer-constructor": "off",
+    "no-restricted-syntax": "off",
+    "object-curly-newline": ["error", { "consistent": true }],
+    "max-len": ["error", { "code": 120 }],
+    "implicit-arrow-linebreak": "off",
+    "indent": "off",
+    "operator-linebreak": "off",
+    "prettier/prettier": "error",
+    "import/no-extraneous-dependencies": "off"
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended", 
+    "prettier"
+  ],
+  "plugins": ["@typescript-eslint", "prettier"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {} // Resolve TypeScript paths
+    }
+  }
+}

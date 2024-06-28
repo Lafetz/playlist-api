@@ -7,12 +7,12 @@ import { signJWT } from "../utils/jwt";
 import { IncorrectCredentials } from "../errors/IncorrectCredentials";
 import { getUser } from "../../core/services/user.service";
 const signin = [
- ...validateAcccount,
+  ...validateAcccount,
   validateRequest,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = await getUser( req.body.email);
-    
+      const user = await getUser(req.body.email);
+
       if (user) {
         const statusLogin = await bcrypt.compare(
           req.body.password,
@@ -21,9 +21,9 @@ const signin = [
         if (!statusLogin) {
           throw new IncorrectCredentials();
         }
-      const userInfo={id:user._id}
-      const jwt=signJWT(userInfo,"1d")
-      res.status(200).json({token:jwt})
+        const userInfo = { id: user._id };
+        const jwt = signJWT(userInfo, "1d");
+        res.status(200).json({ token: jwt });
       } else {
         throw new IncorrectCredentials();
       }
