@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { mongo } from "mongoose";
 import { CustomError } from "../errors/custom.error";
+import log from "../../common/logger";
 
 export const errorHandler = (
   err: Error,
@@ -8,7 +9,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (err instanceof SyntaxError && 'body' in err) {
+  if (err instanceof SyntaxError && "body" in err) {
     return res.status(400).send({
       errors: [{ message: err.message }]
     });
@@ -27,9 +28,9 @@ export const errorHandler = (
   if (err instanceof CustomError) {
     return res.status(err.statusCode).send({ errors: err.serializeErrors() });
   }
-  console.error(err);
+  log.error(err);
 
   res.status(500).send({
-    errors: [{ message: "Something went wrong" }],
+    errors: [{ message: "Something went wrong" }]
   });
 };

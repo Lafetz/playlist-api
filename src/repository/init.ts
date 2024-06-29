@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
 import config from "../config/env.config";
+import log from "../common/logger";
 
 async function InitDB() {
   const dbUrl = config.MONGODB_URI;
   try {
     await mongoose.connect(dbUrl);
-    console.log("db connected...");
+    log.info("db connected...");
   } catch (error) {
-    console.error("error trying to connect to db");
+    log.error("error trying to connect to db");
     process.exit(1);
   }
 }
