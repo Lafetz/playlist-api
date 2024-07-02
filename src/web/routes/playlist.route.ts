@@ -61,7 +61,7 @@ router.post("/", requireUser, Playlist.createPlaylistHandler);
  *       403:
  *         description: Forbidden
  */
-router.get("/", requireUser, Playlist.getPlaylistsHandler);
+router.get("/", requireUser, Playlist.getPlaylistsHandler); //,
 
 /**
  * @swagger

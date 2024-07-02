@@ -22,7 +22,7 @@ const signin = [
           throw new IncorrectCredentials();
         }
         const userInfo = { id: user._id };
-        const jwt = signJWT(userInfo, "1d");
+        const jwt = signJWT(userInfo, "3d");
         res.status(200).json({ token: jwt });
       } else {
         throw new IncorrectCredentials();
@@ -30,6 +30,6 @@ const signin = [
     } catch (err) {
       next(err);
     }
-  },
+  }
 ];
 export default signin;

@@ -10,11 +10,11 @@ const signup = [
     try {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-      const user = await createUser({
+      await createUser({
         email: req.body.email,
         password: hashedPassword
       });
-      res.status(201).json({ msg: "account Created" });
+      res.status(201).json({ message: "account Created" });
     } catch (err) {
       next(err);
     }
